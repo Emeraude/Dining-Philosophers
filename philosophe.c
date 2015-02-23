@@ -10,7 +10,6 @@
 
 #include <unistd.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include "philosophe.h"
 
 void		rest(t_data *data)
@@ -38,7 +37,6 @@ void		think(t_data *data, int pos, int *count)
   eat(data, count);
 }
 
-
 void		*start_diner(void *arg)
 {
   t_data	*data;
@@ -46,7 +44,7 @@ void		*start_diner(void *arg)
 
   count = 0;
   data = (t_data *)arg;
-  printf("[%d] enters in your ass\n", data->id);
+  printf("Philosopher [%d] set around the table\n", data->id);
   while (data->phi_st->food > 0)
     {
       if (!pthread_mutex_trylock(&data->phi_st[data->id % N_PHI].chopstick))
@@ -65,6 +63,7 @@ void		*start_diner(void *arg)
 	}
     }
   printf("Philosopher [%d] has eaten %d time\n", data->id, count);
+  return (NULL);
 }
 
 int		main(void)
