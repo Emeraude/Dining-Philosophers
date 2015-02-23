@@ -5,7 +5,7 @@
 ** Login   <duques_g@epitech.net>
 **
 ** Started on  Mon Feb 23 16:50:12 2015 duques_g
-** Last update Mon Feb 23 21:59:48 2015 duques_g
+** Last update Mon Feb 23 23:22:51 2015 duques_g
 */
 
 #include <unistd.h>
@@ -13,89 +13,81 @@
 #include <stdlib.h>
 #include "philosophe.h"
 
-void		eat(t_data *data, int id)
+void		rest(t_data *data)
 {
-  printf("[%d] eats\n");
   usleep(10000);
-  pthread_mutex_unlock(&data->chopstick[id % N_PHI]);
-  pthread_mutex_unlock(&data->chopstick[(id + 1) % N_PHI]);
-  rest(data, id);
+  printf("[%d] rests\n", data->id);
 }
 
-void		think(t_data *data, int id, int pos)
+void		eat(t_data *data, int *count)
 {
-  printf("[%d] think\n", id);
+  *count = *count + 1;
+  data->phi_st->food--;
+  printf("[%d] eats\n", data->id);
   usleep(10000);
-  pthread_mutex_lock(&data->chopstick[pos % N_PHI]);
-  eat(data, id);
+  pthread_mutex_unlock(&data->phi_st[data->id % N_PHI].chopstick);
+  pthread_mutex_unlock(&data->phi_st[(data->id + 1) % N_PHI].chopstick);
+  rest(data);
 }
 
-void		rest(t_data *data, int id)
+void		think(t_data *data, int pos, int *count)
 {
+  printf("[%d] think\n", data->id);
   usleep(10000);
-  printf("[%d] rests\n", id);
+  pthread_mutex_lock(&data->phi_st[pos].chopstick);
+  eat(data, count);
 }
 
 
 void		*start_diner(void *arg)
 {
   t_data	*data;
-  int		id;
   int		count;
-  data = (t_data *)arg;
-  id = data->id++;
+
   count = 0;
-
-  printf("[%d] enters in your ass\n", id);
-  while (42)
+  data = (t_data *)arg;
+  printf("[%d] enters in your ass\n", data->id);
+  while (data->phi_st->food > 0)
     {
-      if (!pthread_mutex_trylock(&data->chopstick[id % N_PHI]))
+      if (!pthread_mutex_trylock(&data->phi_st[data->id % N_PHI].chopstick))
 	{
-	  if (!pthread_mutex_trylock(&data->chopstick[(id + 1) % N_PHI]))
-	    {
-	      eat(data, id);
-	    }
+	  if (!pthread_mutex_trylock(&data->phi_st[(data->id + 1) % N_PHI].chopstick))
+	    eat(data, &count);
 	  else
-	    {
-	      think(data, id, (id + 1) % N_PHI);
-	    }
+	    think(data, (data->id + 1) % N_PHI, &count);
 	}
-
-      else if (!pthread_mutex_trylock(&data->chopstick[(id + 1) % N_PHI]))
+      else if (!pthread_mutex_trylock(&data->phi_st[(data->id + 1) % N_PHI].chopstick))
 	{
-	  if (!pthread_mutex_trylock(&data->chopstick[id % N_PHI]))
-	    {
-	      eat(data, id);
-	    }
+	  if (!pthread_mutex_trylock(&data->phi_st[data->id % N_PHI].chopstick))
+	    eat(data, &count);
 	  else
-	    {
-	      think(data, id, id % N_PHI);
-	    }
+	    think(data, data->id % N_PHI, &count);
 	}
     }
+  printf("Philosopher [%d] has eaten %d time\n", data->id, count);
 }
 
 int		main(void)
 {
-  t_data	data;
-  pthread_t	thread[N_PHI];
+  t_data	data[N_PHI];
   int		i;
 
-  data.id = 0;
+  data->food = 100;
   i = -1;
   printf("%d\n", N_PHI);
   while (++i != N_PHI)
-    if (pthread_mutex_init(&data.chopstick[i], NULL))
-      return (EXIT_FAILURE);
-  i = -1;
-  while (++i != N_PHI)
-    if (pthread_create(&thread[i], NULL, start_diner, &data))
-      return (EXIT_FAILURE);
-  i = -1;
-  while (++i != N_PHI)
     {
-      pthread_join(thread[i], NULL);
-      usleep(1000);
+      data[i].id = i;
+      data[i].phi_st = data;
+      if (pthread_mutex_init(&data[i].chopstick, NULL))
+	return (EXIT_FAILURE);
     }
+  i = -1;
+  while (++i != N_PHI)
+    if (pthread_create(&data[i].thread, NULL, start_diner, &data[i]))
+      return (EXIT_FAILURE);
+  i = -1;
+  while (++i != N_PHI)
+    pthread_join(data[i].thread, NULL);
   return (EXIT_SUCCESS);
 }
