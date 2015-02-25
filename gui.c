@@ -67,7 +67,6 @@ static int	display_philo(SDL_Surface *screen,
   return (1);
 }
 
-
 static int	fill_gui(SDL_Surface *screen,
 			 t_data *data,
 			 t_conf *conf,

@@ -10,6 +10,8 @@
 
 #include <unistd.h>
 #include <stdio.h>
+#include <errno.h>
+#include <stdlib.h>
 #include "philosophe.h"
 
 static void	rest(t_data *data)
@@ -20,33 +22,43 @@ static void	rest(t_data *data)
 
 static void	eat(t_data *data, t_data *first, t_conf *conf, int id)
 {
-  if (!pthread_mutex_lock(&data->stat->food_lock))
+  int		ret;
+
+  if (!(ret = pthread_mutex_lock(&data->stat->food_lock)))
     {
       if (!data->stat->food)
 	{
-	  pthread_mutex_unlock(&data->stat->food_lock);
-	  pthread_mutex_unlock(&first[id % conf->nb_philo].stick);
-	  pthread_mutex_unlock(&first[(id + 1) % conf->nb_philo].stick);
+	  if (pthread_mutex_unlock(&data->stat->food_lock)
+	      || pthread_mutex_unlock(&first[id % conf->nb_philo].stick)
+	      || pthread_mutex_unlock(&first[(id + 1) % conf->nb_philo].stick))
+	    exit(EXIT_FAILURE);
 	  pthread_exit(NULL);
 	}
       --data->stat->food;
       pthread_mutex_unlock(&data->stat->food_lock);
     }
+  else if (ret != EBUSY)
+    exit(EXIT_FAILURE);
   ++data->eaten_plates;
   ++data->stat->total_eaten;
   printf("\033[0;3%dm\t\t[%d] eats\033[0m\n", id % 8 + 1, id);
   usleep(MAX(TIME_ACTION, 1) * MIN_TIME);
-  pthread_mutex_unlock(&first[id % conf->nb_philo].stick);
-  pthread_mutex_unlock(&first[(id + 1) % conf->nb_philo].stick);
+  if (pthread_mutex_unlock(&first[id % conf->nb_philo].stick)
+      || pthread_mutex_unlock(&first[(id + 1) % conf->nb_philo].stick))
+    exit(EXIT_FAILURE);
   rest(data);
 }
 
 static void	think(t_data *data, int pos)
 {
+  int		ret;
+
   printf("\033[0;3%dm\t\t\t\t[%d] think\033[0m\n",
   	 data->id % 8 + 1, data->id);
   usleep(MAX(TIME_ACTION, 1) * MIN_TIME);
-  pthread_mutex_lock(&data->phi_st[pos].stick);
+  if ((ret = pthread_mutex_lock(&data->phi_st[pos].stick))
+      && ret != EBUSY)
+    exit(EXIT_FAILURE);
   eat(data, data->phi_st, data->conf, data->id);
 }
 
@@ -55,20 +67,30 @@ static void	choose_action(t_data *data,
 			      t_conf *conf,
 			      int id)
 {
-  if (!pthread_mutex_trylock(&first[id % conf->nb_philo].stick))
+  int		ret;
+
+  if (!(ret = pthread_mutex_trylock(&first[id % conf->nb_philo].stick)))
     {
-      if (!pthread_mutex_trylock(&first[(id + 1) % conf->nb_philo].stick))
+      ret = pthread_mutex_trylock(&first[(id + 1) % conf->nb_philo].stick);
+      if (!ret)
 	eat(data, first, conf, id);
-      else
+      else if (ret == EBUSY)
 	think(data, (id + 1) % conf->nb_philo);
-    }
-  else if (!pthread_mutex_trylock(&first[(id + 1) % conf->nb_philo].stick))
-    {
-      if (!pthread_mutex_trylock(&first[id % conf->nb_philo].stick))
-	eat(data, first, conf, id);
       else
-	think(data, id % conf->nb_philo);
+	exit(EXIT_FAILURE);
     }
+  else if (!(ret = pthread_mutex_trylock(&first[(id + 1) % conf->nb_philo].stick)))
+    {
+      ret = pthread_mutex_trylock(&first[id % conf->nb_philo].stick);
+      if (!ret)
+	eat(data, first, conf, id);
+      else if (ret == EBUSY)
+	think(data, id % conf->nb_philo);
+      else
+	exit(EXIT_FAILURE);
+    }
+  if (ret && ret != EBUSY)
+    exit(EXIT_FAILURE);
 }
 
 void		*start_diner(void *arg)
