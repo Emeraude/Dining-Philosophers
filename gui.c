@@ -43,7 +43,7 @@ static int	display_philo(SDL_Surface *screen, t_data *data)
 	  || SDL_BlitSurface(rect, NULL, screen, &pos))
 	return (0);
       SDL_FreeSurface(rect);
-      bar_size = (458 - (data->conf->nb_food - data->phi_st[i].eaten_plates) * 458 / data->conf->nb_food) * data->conf->nb_philo * 2 / 3;
+      bar_size = (458 - (data->conf->nb_food - data->phi_st[i].eaten_plates) * 458 / MAX(data->conf->nb_food, 1)) * data->conf->nb_philo * 2 / 3;
       /* bar_size = (458 / (data->stat->total_eaten / data->phi_st[i].eaten_plates || 1)) /\* * (data->stat->total_eaten / data->phi_st[i].eaten_plates || 1))*\/ * (data->phi_st[i].eaten_plates);// * data->phi_st[i].eaten_plates; */
       pos.y = 469 - bar_size;
       if (!(rect = SDL_CreateRGBSurface(SDL_HWSURFACE, 18, bar_size, 32, 0, 0, 0, 0))
