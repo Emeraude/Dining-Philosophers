@@ -5,7 +5,7 @@
 ** Login   <duques_g@epitech.net>
 **
 ** Started on  Mon Feb 23 16:50:12 2015 duques_g
-** Last update Mon Feb 23 23:22:51 2015 duques_g
+** Last update Wed Feb 25 07:36:14 2015 duques_g
 */
 
 #include <malloc.h>
@@ -38,14 +38,18 @@ int		main(int argc, char **argv)
   t_stat	stat;
   t_conf	conf;
   int		i;
+#ifdef BONUS
   pthread_t	gui;
+#endif
 
   if (!check_argv(argc, argv, &conf)
       || !(data = malloc(conf.nb_philo * sizeof(t_data)))
       || pthread_mutex_init(&stat.food_lock, NULL)
       || !init_philosophers(data, &stat, &conf))
     return (EXIT_FAILURE);
+#ifdef BONUS
   pthread_create(&gui, NULL, launch_gui, data);
+#endif
   i = -1;
   while (++i != conf.nb_philo)
     if (pthread_create(&data[i].thread, NULL, start_diner, &data[i]))

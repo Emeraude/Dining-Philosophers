@@ -5,7 +5,7 @@
 ## Login   <broggi_t@epitech.eu>
 ## 
 ## Started on  Mon Feb 23 23:31:27 2015 broggi_t
-## Last update Mon Feb 23 23:31:27 2015 broggi_t
+## Last update Wed Feb 25 07:47:42 2015 duques_g
 ##
 
 NAME	=	philo
@@ -17,7 +17,6 @@ SRCS	=	argv.c \
 
 CFLAGS	+=	-W -Wall -Wextra -Werror
 LDFLAGS	+=	-pthread
-LDFLAGS	+=	-lSDL
 
 CC	=	gcc
 
@@ -35,7 +34,8 @@ $(NAME):	$(OBJS)
 		@$(CC) $(OBJS) -o $(NAME) $(LDFLAGS)
 		@printf "[\033[0;36mbuilt\033[0m] % 32s\n" $(NAME) | tr ' ' '.'
 
-bonus:		CFLAGS+=-DBONUS;
+bonus:		CFLAGS+=-DBONUS
+bonus:		LDFLAGS+=-lSDL
 bonus:		all
 
 clean:
