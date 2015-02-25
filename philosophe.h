@@ -66,4 +66,15 @@ int	check_argv(int argc, char **argv, t_conf *conf);
 void	*start_diner(void *arg);
 void	*launch_gui(void *arg);
 
+# ifdef BONUS
+#  define COUNT_ARRAY(x)	(sizeof(x) / sizeof(*x))
+
+typedef struct	s_size
+{
+  int		h;
+  int		w;
+}		t_size;
+
+# endif
+
 #endif /* !PHILOSOPHE_H_ */

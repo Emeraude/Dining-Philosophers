@@ -12,73 +12,83 @@
 # include <SDL/SDL.h>
 # include "philosophe.h"
 
-static int	display_philo(SDL_Surface *screen, t_data *data)
+static int	display_rect(SDL_Surface *screen,
+			     t_size *size,
+			     SDL_Rect *pos,
+			     Uint32 color)
 {
   SDL_Surface	*rect;
+
+  if (!(rect = SDL_CreateRGBSurface(SDL_HWSURFACE, size->w, size->h,
+				    32, 0, 0, 0, 0))
+      || SDL_FillRect(rect, NULL, color) != 0
+      || SDL_BlitSurface(rect, NULL, screen, pos))
+    return (0);
+  SDL_FreeSurface(rect);
+  return (1);
+}
+
+static t_size	*init_size(t_size *size, int h, int w)
+{
+  size->h = h;
+  size->w = w;
+  return (size);
+}
+
+static int	display_philo(SDL_Surface *screen,
+			      t_data *data,
+			      t_data *first,
+			      t_conf *conf)
+{
   SDL_Rect	pos;
   int		i;
   int		bar_size;
-  Uint32	colors[] = {0xff0000,
-			    0x00ff00,
-			    0xffff00,
-			    0x0000ff,
-			    0xff00ff,
-			    0x00ffff,
-			    0xaaaaaa,
-			    0xffffff};
+  t_size	size;
+  const Uint32	colors[] = {0xff0000, 0x00ff00, 0xffff00, 0x0000ff,
+			    0xff00ff, 0x00ffff, 0xaaaaaa, 0xffffff};
 
   i = -1;
-  while (++i < data->conf->nb_philo
-	 && (pos.x = 150 + 20 * (i + 1)) <= 640)
+  while (++i < conf->nb_philo && (pos.x = 150 + 20 * (i + 1)) <= 640)
     {
       pos.y = 10;
-      if (!(rect = SDL_CreateRGBSurface(SDL_HWSURFACE, 20, 460, 32, 0, 0, 0, 0))
-	  || SDL_FillRect(rect, NULL, 0xffffffff) != 0
-	  || SDL_BlitSurface(rect, NULL, screen, &pos))
+      if (!display_rect(screen, init_size(&size, 460, 20), &pos, 0xffffff))
 	return (0);
-      SDL_FreeSurface(rect);
       ++pos.x;
-      pos.y = 11;
-      if (!(rect = SDL_CreateRGBSurface(SDL_HWSURFACE, 18, 458, 32, 0, 0, 0, 0))
-	  || SDL_FillRect(rect, NULL, 0) != 0
-	  || SDL_BlitSurface(rect, NULL, screen, &pos))
+      ++pos.y;
+      if (!display_rect(screen, init_size(&size, 458, 18), &pos, 0))
 	return (0);
-      int total_food = data->stat->total_eaten;
-      int food_philo = data->phi_st[i].eaten_plates;
-      SDL_FreeSurface(rect);
-      bar_size = (458 - (data->conf->nb_food - data->phi_st[i].eaten_plates) * 458 / MAX(data->conf->nb_food, 1)) * data->conf->nb_philo * 2 / 3;
-      /* bar_size = (458 / (data->stat->total_eaten / data->phi_st[i].eaten_plates || 1)) /\* * (data->stat->total_eaten / data->phi_st[i].eaten_plates || 1))*\/ * (data->phi_st[i].eaten_plates);// * data->phi_st[i].eaten_plates; */
-      pos.y = 469 - bar_size;
-      if (!(rect = SDL_CreateRGBSurface(SDL_HWSURFACE, 18, bar_size, 32, 0, 0, 0, 0))
-	  || SDL_FillRect(rect, NULL, colors[data->phi_st[i].id % (sizeof(colors) / sizeof(Uint32))]) != 0
-	  || SDL_BlitSurface(rect, NULL, screen, &pos))
+      bar_size = (conf->nb_food - first[i].eaten_plates) * 458;
+      bar_size = (458 - bar_size / MAX(conf->nb_food, 1)) * conf->nb_philo;
+      pos.y = 469 - bar_size * 2 / 3;
+      if (!display_rect(screen, init_size(&size, bar_size * 2 / 3, 18), &pos,
+			colors[data->phi_st[i].id % COUNT_ARRAY(colors)]))
 	return (0);
-      SDL_FreeSurface(rect);
     }
   return (1);
 }
 
 
-static int	fill_gui(SDL_Surface *screen, t_data *data)
+static int	fill_gui(SDL_Surface *screen,
+			 t_data *data,
+			 t_conf *conf,
+			 t_stat *stat)
 {
-  SDL_Surface	*rect;
+  t_size	size;
   SDL_Rect	pos;
 
   pos.x = 10;
   pos.y = 10;
-  if (!(rect = SDL_CreateRGBSurface(SDL_HWSURFACE, 20, 460, 32, 0, 0, 0, 0))
-      || SDL_FillRect(rect, NULL, 0xffffffff) != 0
-      || SDL_BlitSurface(rect, NULL, screen, &pos))
+  size.h = 460;
+  size.w = 20;
+  if (!display_rect(screen, &size, &pos, 0xffffff))
     return (0);
-  SDL_FreeSurface(rect);
   pos.x = 11;
   pos.y = 11;
-  if (!(rect = SDL_CreateRGBSurface(SDL_HWSURFACE, 18, 458 - (data->conf->nb_food - data->stat->total_eaten) * 458 / data->conf->nb_food, 32, 0, 0, 0, 0))
-      || SDL_FillRect(rect, NULL, 0) != 0
-      || SDL_BlitSurface(rect, NULL, screen, &pos))
+  size.h = 458 - (conf->nb_food - stat->total_eaten) * 458 / conf->nb_food;
+  size.w = 18;
+  if (!display_rect(screen, &size, &pos, 0))
     return (0);
-  SDL_FreeSurface(rect);
-  return (display_philo(screen, data));
+  return (display_philo(screen, data, data->phi_st, conf));
 }
 
 void		*launch_gui(void *arg)
@@ -98,7 +108,7 @@ void		*launch_gui(void *arg)
       if (event.type == SDL_QUIT
 	  || (event.type == SDL_KEYDOWN
 	      && event.key.keysym.sym == SDLK_ESCAPE)
-	  || !fill_gui(screen, data)
+	  || !fill_gui(screen, data, data->conf, data->stat)
 	  || SDL_Flip(screen) == -1)
 	break ;
       SDL_Delay(20);

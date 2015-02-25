@@ -11,9 +11,9 @@
 #include <malloc.h>
 #include "philosophe.h"
 
-int	init_philosophers(t_data *data, t_stat *stat, t_conf *conf)
+static int	init_philosophers(t_data *data, t_stat *stat, t_conf *conf)
 {
-  int	i;
+  int		i;
 
   stat->food = conf->nb_food;
   stat->total_eaten = 0;
@@ -32,12 +32,30 @@ int	init_philosophers(t_data *data, t_stat *stat, t_conf *conf)
   return (1);
 }
 
+static int	launch_threads(t_data *data)
+{
+  int		i;
+
+  i = -1;
+  while (++i != data->conf->nb_philo)
+    if (pthread_create(&data[i].thread, NULL, start_diner, &data[i]))
+      return (0);
+  i = -1;
+  while (++i != data->conf->nb_philo)
+    {
+      if (pthread_join(data[i].thread, NULL))
+	return (0);
+      printf("\033[0;3%dmPhilosopher [%d] has eaten %d times\033[0m\n",
+	     i % 8 + 1, i, data[i].eaten_plates);
+    }
+  return (1);
+}
+
 int		main(int argc, char **argv)
 {
   t_data	*data;
   t_stat	stat;
   t_conf	conf;
-  int		i;
 #ifdef BONUS
   pthread_t	gui;
 #endif
@@ -50,17 +68,8 @@ int		main(int argc, char **argv)
 #ifdef BONUS
   pthread_create(&gui, NULL, launch_gui, data);
 #endif
-  i = -1;
-  while (++i != conf.nb_philo)
-    if (pthread_create(&data[i].thread, NULL, start_diner, &data[i]))
-      return (EXIT_FAILURE);
-  i = -1;
-  while (++i != conf.nb_philo)
-    {
-      pthread_join(data[i].thread, NULL);
-      printf("\033[0;3%dmPhilosopher [%d] has eaten %d times\033[0m\n",
-	     i % 8 + 1, i, data[i].eaten_plates);
-    }
+  if (!launch_threads(data))
+    return (EXIT_FAILURE);
   printf("Total eaten plates : %d\n", stat.total_eaten);
   free(data);
   return (EXIT_SUCCESS);

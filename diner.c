@@ -44,7 +44,7 @@ static void	eat(t_data *data, t_data *first, t_conf *conf, int id)
 static void	think(t_data *data, int pos)
 {
   printf("\033[0;3%dm\t\t\t\t[%d] think\033[0m\n",
-	 data->id % 8 + 1, data->id);
+  	 data->id % 8 + 1, data->id);
   usleep(MAX(TIME_ACTION, 1) * MIN_TIME);
   pthread_mutex_lock(&data->phi_st[pos].stick);
   eat(data, data->phi_st, data->conf, data->id);
