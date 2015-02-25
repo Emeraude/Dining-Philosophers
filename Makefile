@@ -10,7 +10,9 @@
 
 NAME	=	philo
 
-SRCS	=	philosophe.c
+SRCS	=	argv.c \
+		diner.c \
+		main.c
 
 CFLAGS	+=	-W -Wall -Wextra -Werror
 LDFLAGS	+=	-pthread

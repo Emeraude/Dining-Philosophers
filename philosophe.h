@@ -18,7 +18,7 @@
 # endif
 
 # ifndef NB_FOOD
-#  define NB_FOOD	1000
+#  define NB_FOOD	100
 # endif
 
 # define MIN_TIME	1000
@@ -34,14 +34,22 @@ typedef struct		s_stat
   int			total_eaten;
 }			t_stat;
 
+typedef struct		s_conf
+{
+  int			nb_philo;
+  int			nb_food;
+  int			time_action;
+}			t_conf;
+
 typedef struct		s_data
 {
   pthread_t		thread;
-  pthread_mutex_t	chopstick;
+  pthread_mutex_t	stick;
   int			id;
   int			eaten_plates;
   struct s_data		*phi_st;
   struct s_stat		*stat;
+  struct s_conf		*conf;
 }			t_data;
 
 # ifndef EXIT_SUCCESS
@@ -53,5 +61,8 @@ typedef struct		s_data
 # endif
 
 # define MAX(x, y)	(x < y ? y : x)
+
+int	check_argv(int argc, char **argv, t_conf *conf);
+void	*start_diner(void *arg);
 
 #endif /* !PHILOSOPHE_H_ */
