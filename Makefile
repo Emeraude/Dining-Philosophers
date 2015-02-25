@@ -12,10 +12,12 @@ NAME	=	philo
 
 SRCS	=	argv.c \
 		diner.c \
+		gui.c \
 		main.c
 
 CFLAGS	+=	-W -Wall -Wextra -Werror
 LDFLAGS	+=	-pthread
+LDFLAGS	+=	-lSDL
 
 CC	=	gcc
 
@@ -25,7 +27,7 @@ OBJS	=	$(SRCS:.c=.o)
 
 %.o: %.c
 		@printf "[\033[0;32mcompiled\033[0m] % 29s\n" $< | tr ' ' '.'
-		@$(CC) -c -o $@ $< $(CFLAGS)
+		@$(CC) -c -o $@ $< $(CFLAGS) $(LDFLAGS)
 
 all:		$(NAME)
 

@@ -18,7 +18,7 @@
 # endif
 
 # ifndef NB_FOOD
-#  define NB_FOOD	100
+#  define NB_FOOD	1000
 # endif
 
 # define MIN_TIME	1000
@@ -64,5 +64,6 @@ typedef struct		s_data
 
 int	check_argv(int argc, char **argv, t_conf *conf);
 void	*start_diner(void *arg);
+void	*launch_gui(void *arg);
 
 #endif /* !PHILOSOPHE_H_ */

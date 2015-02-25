@@ -38,12 +38,14 @@ int		main(int argc, char **argv)
   t_stat	stat;
   t_conf	conf;
   int		i;
+  pthread_t	gui;
 
   if (!check_argv(argc, argv, &conf)
       || !(data = malloc(conf.nb_philo * sizeof(t_data)))
       || pthread_mutex_init(&stat.food_lock, NULL)
       || !init_philosophers(data, &stat, &conf))
     return (EXIT_FAILURE);
+  pthread_create(&gui, NULL, launch_gui, data);
   i = -1;
   while (++i != conf.nb_philo)
     if (pthread_create(&data[i].thread, NULL, start_diner, &data[i]))
