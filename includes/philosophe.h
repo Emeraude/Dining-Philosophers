@@ -47,6 +47,8 @@ typedef struct		s_data
   pthread_mutex_t	stick;
   int			id;
   int			eaten_plates;
+  int			hours_slept;
+  int			hours_thought;
   struct s_data		*phi_st;
   struct s_stat		*stat;
   struct s_conf		*conf;
@@ -64,16 +66,31 @@ typedef struct		s_data
 
 int	check_argv(int argc, char **argv, t_conf *conf);
 void	*start_diner(void *arg);
-void	*launch_gui(void *arg);
 
 # ifdef BONUS
+#  include <SDL/SDL.h>
 #  define COUNT_ARRAY(x)	(sizeof(x) / sizeof(*x))
+
+#  define BAR_WIDTH	40
+#  define WIN_WIDTH	640
+#  define WIN_HEIGHT	480
 
 typedef struct	s_size
 {
   int		h;
   int		w;
 }		t_size;
+
+void	*launch_gui(void *arg);
+
+int	display_rect(SDL_Surface *screen,
+		     t_size *size,
+		     SDL_Rect *pos,
+		     Uint32 color);
+int	display_one_empty_bar(SDL_Surface *screen,
+			      t_size *size,
+			      SDL_Rect *pos);
+t_size	*init_size(t_size *size, int h, int w);
 
 # endif
 

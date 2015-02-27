@@ -16,6 +16,7 @@
 
 static void	rest(t_data *data)
 {
+  ++data->hours_slept;
   printf("\033[0;3%dm[%d] rests\033[0m\n", data->id % 8 + 1, data->id);
   usleep(MAX(data->conf->time_action, 1) * MIN_TIME);
 }
@@ -53,6 +54,7 @@ static void	think(t_data *data, int pos)
 {
   int		ret;
 
+  ++data->hours_thought;
   printf("\033[0;3%dm\t\t\t\t[%d] think\033[0m\n",
   	 data->id % 8 + 1, data->id);
   usleep(MAX(TIME_ACTION, 1) * MIN_TIME);

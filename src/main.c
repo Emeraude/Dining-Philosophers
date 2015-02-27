@@ -26,6 +26,8 @@ static int	init_philosophers(t_data *data, t_stat *stat, t_conf *conf)
       data[i].stat = stat;
       data[i].conf = conf;
       data[i].eaten_plates = 0;
+      data[i].hours_slept = 0;
+      data[i].hours_thought = 0;
       if (pthread_mutex_init(&data[i].stick, NULL))
 	return (0);
     }

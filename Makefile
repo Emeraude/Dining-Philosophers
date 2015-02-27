@@ -10,12 +10,18 @@
 
 NAME	=	philo
 
-SRCS	=	argv.c \
-		diner.c \
-		gui.c \
-		main.c
+DIR	=	src
+
+DIRGUI	=	$(DIR)/gui
+
+SRCS	=	$(DIR)/argv.c \
+		$(DIR)/diner.c \
+		$(DIR)/main.c \
+		$(DIRGUI)/init.c \
+		$(DIRGUI)/rect.c
 
 CFLAGS	+=	-W -Wall -Wextra -Werror
+CFLAGS	+=	-I includes
 LDFLAGS	+=	-pthread
 
 CC	=	gcc
@@ -48,4 +54,6 @@ fclean:		clean
 
 re:		fclean all
 
-.PHONY:		all bonus clean fclean re
+rebonus:	fclean bonus
+
+.PHONY:		all bonus clean fclean re rebonus
