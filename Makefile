@@ -15,6 +15,7 @@ DIR	=	src
 DIRGUI	=	$(DIR)/gui
 
 SRCS	=	$(DIR)/argv.c \
+		$(DIR)/csv.c \
 		$(DIR)/diner.c \
 		$(DIR)/main.c \
 		$(DIRGUI)/init.c \

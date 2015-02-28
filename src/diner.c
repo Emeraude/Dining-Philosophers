@@ -17,7 +17,7 @@
 static void	rest(t_data *data)
 {
   ++data->hours_slept;
-  printf("\033[0;3%dm[%d] rests\033[0m\n", data->id % 8 + 1, data->id);
+  display_rest(data->stat, data->id);
   usleep(MAX(data->conf->time_action, 1) * MIN_TIME);
 }
 
@@ -42,7 +42,7 @@ static void	eat(t_data *data, t_data *first, t_conf *conf, int id)
     exit(EXIT_FAILURE);
   ++data->eaten_plates;
   ++data->stat->total_eaten;
-  printf("\033[0;3%dm\t\t[%d] eats\033[0m\n", id % 8 + 1, id);
+  display_eat(data->stat, id);
   usleep(MAX(TIME_ACTION, 1) * MIN_TIME);
   if (pthread_mutex_unlock(&first[id % conf->nb_philo].stick)
       || pthread_mutex_unlock(&first[(id + 1) % conf->nb_philo].stick))
@@ -55,8 +55,7 @@ static void	think(t_data *data, int pos)
   int		ret;
 
   ++data->hours_thought;
-  printf("\033[0;3%dm\t\t\t\t[%d] think\033[0m\n",
-  	 data->id % 8 + 1, data->id);
+  display_think(data->stat, data->id);
   usleep(MAX(TIME_ACTION, 1) * MIN_TIME);
   if ((ret = pthread_mutex_lock(&data->phi_st[pos].stick))
       && ret != EBUSY)

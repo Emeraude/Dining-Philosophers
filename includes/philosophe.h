@@ -32,6 +32,9 @@ typedef struct		s_stat
   pthread_mutex_t	food_lock;
   int			food;
   int			total_eaten;
+# ifdef BONUS
+  int			outfd;
+# endif
 }			t_stat;
 
 typedef struct		s_conf
@@ -62,10 +65,15 @@ typedef struct		s_data
 #  define EXIT_FAILURE	1
 # endif
 
+# define UNUSED		__attribute__((unused))
+
 # define MAX(x, y)	(x < y ? y : x)
 
 int	check_argv(int argc, char **argv, t_conf *conf);
 void	*start_diner(void *arg);
+void	display_rest(t_stat *stat, int id);
+void	display_eat(t_stat *stat, int id);
+void	display_think(t_stat *stat, int id);
 
 # ifdef BONUS
 #  include <SDL/SDL.h>

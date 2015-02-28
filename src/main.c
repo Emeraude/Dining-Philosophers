@@ -8,6 +8,9 @@
 ** Last update Wed Feb 25 07:36:14 2015 duques_g
 */
 
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <malloc.h>
 #include "philosophe.h"
 
@@ -53,6 +56,14 @@ static int	launch_threads(t_data *data)
   return (1);
 }
 
+#ifdef BONUS
+static void	write_header_csv(t_stat *stat)
+{
+  if (stat->outfd != -1)
+    dprintf(stat->outfd, "timestamp,philosopher,action\n");
+}
+#endif
+
 int		main(int argc, char **argv)
 {
   t_data	*data;
@@ -60,19 +71,23 @@ int		main(int argc, char **argv)
   t_conf	conf;
 #ifdef BONUS
   pthread_t	gui;
-#endif
 
+  stat.outfd = creat("out.csv", S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+  write_header_csv(&stat);
+#endif
   if (!check_argv(argc, argv, &conf)
       || !(data = malloc(conf.nb_philo * sizeof(t_data)))
       || pthread_mutex_init(&stat.food_lock, NULL)
-      || !init_philosophers(data, &stat, &conf))
-    return (EXIT_FAILURE);
+      || !init_philosophers(data, &stat, &conf)
 #ifdef BONUS
-  pthread_create(&gui, NULL, launch_gui, data);
+      || pthread_create(&gui, NULL, launch_gui, data)
 #endif
-  if (!launch_threads(data))
+      || !launch_threads(data))
     return (EXIT_FAILURE);
   printf("Total eaten plates : %d\n", stat.total_eaten);
+#ifdef BONUS
+  close(stat.outfd);
+#endif
   free(data);
   return (EXIT_SUCCESS);
 }
