@@ -9,7 +9,7 @@ Seven silent philosophers sit at a round table with bowls of rice. Chopsticks ar
 .br
 If compiled with \fBbonus\fR option, a GUI created with the \fBSDL\fR will be launched, and informations about the philosophers will be displayed in it; and written in a file which can be used to do data analysis.
 .br
-It can support more than 25000 philosophers, even if the GUI is launched.
+It can support up to 30000 philosophers, even if the GUI is launched.
 .SH CONFIGURATION
 .PP
 You can change the number of philosophers, the quantity of food, the time of each action. Each of this values can be changed at the compile time and at the run time. The macros you have to change at the compile time are the following :

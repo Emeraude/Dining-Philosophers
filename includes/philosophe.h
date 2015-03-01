@@ -34,6 +34,8 @@
 # define MSG_ONE_PHILO	"There is only one philosopher, which \
 is playing alone with his stick\n"
 # define MSG_NO_PHILO	"There is no philosopher\n"
+# define MSG_TOO_MANY_PHILO	"%d philosophers can't set around \
+such a tiny table\n"
 # define MSG_NO_FOOD	"There is no food\n"
 # define MSG_INVALID_TIME	"Time is too short\n"
 # define MSG_ERROR_OPEN_FILE	"Unable to open the file %s\n"

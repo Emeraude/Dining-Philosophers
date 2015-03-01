@@ -19,6 +19,8 @@ static int	check_argv_integrity(t_conf *conf)
     return (fprintf(stderr, MSG_ONE_PHILO) * 0);
   else if (conf->nb_philo < 1)
     return (fprintf(stderr, MSG_NO_PHILO) * 0);
+  else if (conf->nb_philo > 30000)
+    return (fprintf(stderr, MSG_TOO_MANY_PHILO, conf->nb_philo) * 0);
   if (conf->nb_food < 1)
     return (fprintf(stderr, MSG_NO_FOOD) * 0);
   if (conf->time_action < 1)
