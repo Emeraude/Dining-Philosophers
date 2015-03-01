@@ -13,6 +13,12 @@
 #include "philosophe.h"
 
 #ifdef BONUS
+void	write_header_csv(t_stat *stat)
+{
+  if (stat->outfd != -1)
+    dprintf(stat->outfd, "timestamp,philosopher,action\n");
+}
+
 static unsigned long int	get_timestamp()
 {
   struct timeval		time;

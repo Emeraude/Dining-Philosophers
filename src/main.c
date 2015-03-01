@@ -19,6 +19,10 @@ static int	init_philosophers(t_data *data, t_stat *stat, t_conf *conf)
 {
   int		i;
 
+#ifdef BONUS
+  stat->outfd = creat(conf->outfile, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+  write_header_csv(stat);
+#endif
   stat->food = conf->nb_food;
   stat->total_eaten = 0;
   printf("%d philosophers enter in the room\n", conf->nb_philo);
@@ -57,14 +61,6 @@ static int	launch_threads(t_data *data)
   return (1);
 }
 
-#ifdef BONUS
-static void	write_header_csv(t_stat *stat)
-{
-  if (stat->outfd != -1)
-    dprintf(stat->outfd, "timestamp,philosopher,action\n");
-}
-#endif
-
 int		main(int argc, char **argv)
 {
   t_data	*data;
@@ -72,12 +68,13 @@ int		main(int argc, char **argv)
   t_conf	conf;
 #ifdef BONUS
   pthread_t	gui;
-
-  stat.outfd = creat("out.csv", S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-  write_header_csv(&stat);
 #endif
-  if (!check_argv(argc, argv, &conf)
-      || !(data = malloc(conf.nb_philo * sizeof(t_data)))
+
+  if (!check_argv(argc, argv, &conf))
+    return (EXIT_FAILURE);
+  if (conf.exit)
+    return (EXIT_SUCCESS);
+  if (!(data = malloc(conf.nb_philo * sizeof(t_data)))
       || pthread_mutex_init(&stat.food_lock, NULL)
       || !init_philosophers(data, &stat, &conf)
 #ifdef BONUS

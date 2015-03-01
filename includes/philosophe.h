@@ -27,6 +27,16 @@
 #  define TIME_ACTION	20
 # endif
 
+# ifndef OUT_FILE
+#  define OUT_FILE	"out.csv"
+# endif
+
+# define MSG_ONE_PHILO	"There is only one philosopher, which \
+is playing alone with his chopstick\n"
+# define MSG_NO_PHILO	"There is no philosopher\n"
+# define MSG_NO_FOOD	"There is no food\n"
+# define MSG_INVALID_TIME	"Time is too short\n"
+
 typedef struct		s_stat
 {
   pthread_mutex_t	food_lock;
@@ -42,6 +52,10 @@ typedef struct		s_conf
   int			nb_philo;
   int			nb_food;
   int			time_action;
+  int			exit;
+# ifdef BONUS
+  char			*outfile;
+# endif
 }			t_conf;
 
 typedef struct		s_data
@@ -74,5 +88,8 @@ void	*start_diner(void *arg);
 void	display_rest(t_stat *stat, int id);
 void	display_eat(t_stat *stat, int id);
 void	display_think(t_stat *stat, int id);
+# ifdef BONUS
+void    write_header_csv(t_stat *stat);
+#endif
 
 #endif /* !PHILOSOPHE_H_ */
