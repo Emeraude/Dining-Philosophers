@@ -21,6 +21,8 @@ static int	init_philosophers(t_data *data, t_stat *stat, t_conf *conf)
 
 #ifdef BONUS
   stat->outfd = creat(conf->outfile, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+  if (stat->outfd == -1)
+    fprintf(stderr, MSG_ERROR_OPEN_FILE, conf->outfile);
   write_header_csv(stat);
 #endif
   stat->food = conf->nb_food;

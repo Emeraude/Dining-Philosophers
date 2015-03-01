@@ -36,6 +36,7 @@ is playing alone with his chopstick\n"
 # define MSG_NO_PHILO	"There is no philosopher\n"
 # define MSG_NO_FOOD	"There is no food\n"
 # define MSG_INVALID_TIME	"Time is too short\n"
+# define MSG_ERROR_OPEN_FILE	"Unable to open the file %s\n"
 
 typedef struct		s_stat
 {

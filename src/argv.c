@@ -38,19 +38,18 @@ static void	display_config()
   printf("============================\n");
 }
 
-static void	arg_with_value(char **argv, int i, t_conf *conf)
+static void	arg_with_value(char **argv, int *i, t_conf *conf)
 {
-  if (!strcmp("--philo", argv[i]) || !strcmp("-p", argv[i]))
-    conf->nb_philo = atoi(argv[++i]);
-  else if (!strcmp("--food", argv[i]) || !strcmp("-f", argv[i]))
-    conf->nb_food = atoi(argv[++i]);
-  else if (!strcmp("--time", argv[i]) || !strcmp("-t", argv[i]))
-    conf->time_action = atoi(argv[++i]);
+  if (!strcmp("--philo", argv[*i]) || !strcmp("-p", argv[*i]))
+    conf->nb_philo = atoi(argv[++*i]);
+  else if (!strcmp("--food", argv[*i]) || !strcmp("-f", argv[*i]))
+    conf->nb_food = atoi(argv[++*i]);
+  else if (!strcmp("--time", argv[*i]) || !strcmp("-t", argv[*i]))
+    conf->time_action = atoi(argv[++*i]);
 #ifdef BONUS
-  else if (!strcmp("--out", argv[i]) || !strcmp("-o", argv[i]))
-    conf->outfile = argv[++i];
+  else if (!strcmp("--out", argv[*i]) || !strcmp("-o", argv[*i]))
+    conf->outfile = argv[++*i];
 #endif
-
 }
 
 static void	arg_without_value(char *arg, t_conf *conf)
@@ -79,7 +78,7 @@ int	check_argv(int argc, char **argv, t_conf *conf)
   while (++i < argc)
     {
       if (i + 1 < argc)
-	arg_with_value(argv, i, conf);
+	arg_with_value(argv, &i, conf);
       else
 	arg_without_value(argv[i], conf);
     }

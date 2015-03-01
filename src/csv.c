@@ -33,7 +33,7 @@ void	display_rest(t_stat *stat UNUSED, int id)
   printf("\033[0;3%dm[%d] rests\033[0m\n", id % 8 + 1, id);
 #ifdef BONUS
   if (stat->outfd != -1)
-    dprintf(stat->outfd, "%lu,%d\n", get_timestamp(), id);
+    dprintf(stat->outfd, "%lu,%d,rest\n", get_timestamp(), id);
 #endif
 }
 
@@ -42,7 +42,7 @@ void	display_eat(t_stat *stat UNUSED, int id)
   printf("\033[0;3%dm\t\t[%d] eats\033[0m\n", id % 8 + 1, id);
 #ifdef BONUS
   if (stat->outfd != -1)
-    dprintf(stat->outfd, "%lu,%d\n", get_timestamp(), id);
+    dprintf(stat->outfd, "%lu,%d,eat\n", get_timestamp(), id);
 #endif
 }
 
@@ -51,6 +51,6 @@ void	display_think(t_stat *stat UNUSED, int id)
   printf("\033[0;3%dm\t\t\t\t[%d] think\033[0m\n", id % 8 + 1, id);
 #ifdef BONUS
   if (stat->outfd != -1)
-    dprintf(stat->outfd, "%lu,%d\n", get_timestamp(), id);
+    dprintf(stat->outfd, "%lu,%d,think\n", get_timestamp(), id);
 #endif
 }
