@@ -5,7 +5,7 @@
 ** Login   <broggi_t@epitech.eu>
 ** 
 ** Started on  Wed Feb 25 06:27:11 2015 broggi_t
-** Last update Sun Mar  1 18:57:51 2015 duques_g
+** Last update Sun Mar  1 23:05:49 2015 duques_g
 */
 
 #ifdef BONUS
@@ -56,7 +56,7 @@ static int	display_one_philo(SDL_Surface *screen,
   float		philo;
 
   philo = data->conf->nb_philo;
-  food = data->stat->food;
+  food = data->conf->nb_food;
   pos.y = 10;
   pos.x = 100 + BAR_WIDTH * (i + 1);
   if (!display_one_empty_bar(screen,
@@ -91,7 +91,7 @@ static int	fill_gui(SDL_Surface *screen, t_data *data)
   int		eaten;
   SDL_Rect	pos;
 
-  food = MAX(data->stat->food, 1);
+  food = MAX(data->conf->nb_food, 1);
   eaten = data->stat->total_eaten;
   pos.x = 10;
   pos.y = 10;

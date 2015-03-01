@@ -5,7 +5,7 @@
 ** Login   <broggi_t@epitech.eu>
 ** 
 ** Started on  Sun Mar  1 21:45:14 2015 broggi_t
-** Last update Sun Mar  1 21:45:14 2015 broggi_t
+** Last update Sun Mar  1 23:01:04 2015 duques_g
 */
 
 #ifdef BONUS
@@ -18,12 +18,14 @@ void	manage_event(SDL_Event *event, t_data *data)
     {
       pthread_mutex_lock(&data->stat->food_lock);
       data->stat->food += data->conf->nb_food / 20;
+      data->conf->nb_food += data->conf->nb_food / 20;
       pthread_mutex_unlock(&data->stat->food_lock);
     }
   else if (event->key.keysym.sym == SDLK_s)
     {
       pthread_mutex_lock(&data->stat->food_lock);
       data->stat->food -= data->conf->nb_food / 20;
+      data->conf->nb_food -= data->conf->nb_food / 20;
       pthread_mutex_unlock(&data->stat->food_lock);
     }
 }
