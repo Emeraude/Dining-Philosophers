@@ -5,7 +5,7 @@
 ** Login   <broggi_t@epitech.eu>
 ** 
 ** Started on  Wed Feb 25 06:27:11 2015 broggi_t
-** Last update Sun Mar  1 18:29:22 2015 duques_g
+** Last update Sun Mar  1 18:57:51 2015 duques_g
 */
 
 #ifdef BONUS
@@ -23,8 +23,17 @@ static int	display_one_philo(SDL_Surface *screen,
   int		bar_size;
   float		food;
   float		philo;
+  float		total_action;
+  float		size_rest;
+  float		size_eat;
+  float		size_think;
 
-  (void) philo;
+  (void)color;
+  (void)size_rest;
+  (void)size_think;
+  (void)size_eat;
+  (void)total_action;
+  (void)philo;
   (void)food;
 
   philo = data->conf->nb_philo;
@@ -36,11 +45,28 @@ static int	display_one_philo(SDL_Surface *screen,
 			     &pos))
     return (0);
   bar_size = data->phi_st[i].eaten_plates * ((WIN_HEIGHT - 22) / (food / philo));
-  printf("%d: %d: %f\n", bar_size, data->phi_st[i].eaten_plates, WIN_HEIGHT / (food / philo));
+  printf("%d: %d: %f: ", bar_size, data->phi_st[i].eaten_plates, WIN_HEIGHT / (food / philo));
+  total_action = data->phi_st[i].eaten_plates + data->phi_st[i].hours_slept + data->phi_st[i].hours_thought;
+  size_rest = bar_size / (total_action / data->phi_st[i].hours_slept);
+  size_think = bar_size / (total_action / data->phi_st[i].hours_thought);
+  size_eat = bar_size / (total_action / data->phi_st[i].eaten_plates);
+  printf("%f: %f\n", total_action, size_rest);
   pos.y = WIN_HEIGHT - bar_size - 11;
-  return (display_rect(screen,
-		       init_size(&size, bar_size, BAR_WIDTH - 2)
-		       , &pos, color));
+  if (!display_rect(screen,
+		    init_size(&size, size_rest, BAR_WIDTH - 2)
+		    , &pos, color & 0x555555))
+    return (0);
+  pos.y = WIN_HEIGHT - bar_size - 11 + size_rest;
+  if (!display_rect(screen,
+		    init_size(&size, size_think, BAR_WIDTH - 2)
+		    , &pos, color & 0xaaaaaa))
+    return (0);
+  pos.y = WIN_HEIGHT - bar_size - 11 + size_rest + size_think;
+  if (!display_rect(screen,
+		    init_size(&size, size_eat, BAR_WIDTH - 2)
+		    , &pos, color))
+    return (0);
+  return (1);
 }
 
 static int	display_philos(SDL_Surface *screen,
@@ -50,7 +76,7 @@ static int	display_philos(SDL_Surface *screen,
   SDL_Rect	pos;
   int		i;
   const Uint32	colors[] = {0xff0000, 0x00ff00, 0xffff00, 0x0000ff,
-  			    0xff00ff, 0x00ffff, 0xaaaaaa, 0xffffff};
+  			    0xff00ff, 0x00ffff, 0xffffff};
 
   i = -1;
   while (++i < conf->nb_philo && (pos.x = 150 + BAR_WIDTH * (i + 1)) <= 640)
