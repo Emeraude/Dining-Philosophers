@@ -16,6 +16,7 @@
 #  include "philosophe.h"
 #  define COUNT_ARRAY(x)	(sizeof(x) / sizeof(*x))
 
+#  define WIN_TITLE	"Dining Philosophers"
 #  define WIN_WIDTH	640
 #  define WIN_HEIGHT	480
 #  define BAR_WIDTH	40

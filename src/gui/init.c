@@ -84,18 +84,15 @@ static int	display_philos(SDL_Surface *screen,
   return (1);
 }
 
-static int	fill_gui(SDL_Surface *screen,
-			 t_data *data,
-			 t_conf *conf,
-			 t_stat *stat)
+static int	fill_gui(SDL_Surface *screen, t_data *data)
 {
   t_size	size;
   int		food;
   int		eaten;
   SDL_Rect	pos;
 
-  food = MAX(stat->food, 1);
-  eaten = stat->total_eaten;
+  food = MAX(data->stat->food, 1);
+  eaten = data->stat->total_eaten;
   pos.x = 10;
   pos.y = 10;
   size.h = WIN_HEIGHT - 20;
@@ -108,33 +105,31 @@ static int	fill_gui(SDL_Surface *screen,
   size.w = BAR_WIDTH - 2;
   if (!display_rect(screen, &size, &pos, 0))
     return (0);
-  return (display_philos(screen, data, conf));
+  return (display_philos(screen, data, data->conf));
 }
 
 void		*launch_gui(void *arg)
 {
   SDL_Event	event;
   SDL_Surface	*screen;
-  t_data	*data;
 
-  data = (t_data *)arg;
   if (SDL_Init(SDL_INIT_VIDEO) == -1
       || !(screen = SDL_SetVideoMode(WIN_WIDTH, WIN_HEIGHT,
 				     32, SDL_HWSURFACE))
       || SDL_FillRect(screen, NULL, 0))
     return (NULL);
-  SDL_WM_SetCaption("Dining Philosophers", NULL);
+  SDL_WM_SetCaption(WIN_TITLE, NULL);
   while (1)
     {
       SDL_PollEvent(&event);
       if (event.type == SDL_QUIT
 	  || (event.type == SDL_KEYDOWN
 	      && event.key.keysym.sym == SDLK_ESCAPE)
-	  || !fill_gui(screen, data, data->conf, data->stat)
+	  || !fill_gui(screen, (t_data *)arg)
 	  || SDL_Flip(screen) == -1)
 	break ;
       else if (event.type == SDL_KEYDOWN)
-	manage_event(&event, data);
+	manage_event(&event, (t_data *)arg);
       SDL_Delay(20);
     }
   SDL_FreeSurface(screen);
