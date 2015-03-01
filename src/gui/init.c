@@ -5,7 +5,7 @@
 ** Login   <broggi_t@epitech.eu>
 ** 
 ** Started on  Wed Feb 25 06:27:11 2015 broggi_t
-** Last update Wed Feb 25 07:50:11 2015 duques_g
+** Last update Sun Mar  1 18:29:22 2015 duques_g
 */
 
 #ifdef BONUS
@@ -21,8 +21,11 @@ static int	display_one_philo(SDL_Surface *screen,
   SDL_Rect	pos;
   t_size	size;
   int		bar_size;
-  int		food;
-  int		philo;
+  float		food;
+  float		philo;
+
+  (void) philo;
+  (void)food;
 
   philo = data->conf->nb_philo;
   food = data->conf->nb_food;
@@ -32,11 +35,11 @@ static int	display_one_philo(SDL_Surface *screen,
 			     init_size(&size, WIN_HEIGHT - 20, BAR_WIDTH),
 			     &pos))
     return (0);
-  bar_size = (food - data->phi_st[i].eaten_plates) * (WIN_HEIGHT - 22);
-  bar_size = (WIN_HEIGHT - 22 - bar_size / MAX(food, 1)) * philo;
-  pos.y = WIN_HEIGHT - 11 - bar_size * 2 / 3;
+  bar_size = data->phi_st[i].eaten_plates * ((WIN_HEIGHT - 22) / (food / philo));
+  printf("%d: %d: %f\n", bar_size, data->phi_st[i].eaten_plates, WIN_HEIGHT / (food / philo));
+  pos.y = WIN_HEIGHT - bar_size - 11;
   return (display_rect(screen,
-		       init_size(&size, bar_size * 2 / 3, BAR_WIDTH - 2)
+		       init_size(&size, bar_size, BAR_WIDTH - 2)
 		       , &pos, color));
 }
 
