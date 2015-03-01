@@ -10,6 +10,7 @@
 
 #ifdef BONUS
 # include "philosophe.h"
+# include "bonus.h"
 
 int		display_rect(SDL_Surface *screen,
 			     t_size *size,

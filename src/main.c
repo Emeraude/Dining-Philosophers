@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <malloc.h>
 #include "philosophe.h"
+#include "bonus.h"
 
 static int	init_philosophers(t_data *data, t_stat *stat, t_conf *conf)
 {

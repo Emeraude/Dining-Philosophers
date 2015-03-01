@@ -11,6 +11,7 @@
 #ifdef BONUS
 # include <SDL/SDL.h>
 # include "philosophe.h"
+# include "bonus.h"
 
 static int	display_one_philo(SDL_Surface *screen,
 				  t_data *data,

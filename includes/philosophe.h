@@ -75,31 +75,4 @@ void	display_rest(t_stat *stat, int id);
 void	display_eat(t_stat *stat, int id);
 void	display_think(t_stat *stat, int id);
 
-# ifdef BONUS
-#  include <SDL/SDL.h>
-#  define COUNT_ARRAY(x)	(sizeof(x) / sizeof(*x))
-
-#  define BAR_WIDTH	40
-#  define WIN_WIDTH	640
-#  define WIN_HEIGHT	480
-
-typedef struct	s_size
-{
-  int		h;
-  int		w;
-}		t_size;
-
-void	*launch_gui(void *arg);
-
-int	display_rect(SDL_Surface *screen,
-		     t_size *size,
-		     SDL_Rect *pos,
-		     Uint32 color);
-int	display_one_empty_bar(SDL_Surface *screen,
-			      t_size *size,
-			      SDL_Rect *pos);
-t_size	*init_size(t_size *size, int h, int w);
-
-# endif
-
 #endif /* !PHILOSOPHE_H_ */
