@@ -13,6 +13,7 @@
 
 # ifdef BONUS
 #  include <SDL/SDL.h>
+#  include "philosophe.h"
 #  define COUNT_ARRAY(x)	(sizeof(x) / sizeof(*x))
 
 #  define WIN_WIDTH	640
@@ -36,6 +37,7 @@ int	display_one_empty_bar(SDL_Surface *screen,
 			      t_size *size,
 			      SDL_Rect *pos);
 t_size	*init_size(t_size *size, int h, int w);
+void	manage_event(SDL_Event *event, t_data *data);
 
 # endif
 #endif /* !BONUS_H_ */
