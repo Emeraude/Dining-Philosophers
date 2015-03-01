@@ -56,7 +56,7 @@ static int	display_one_philo(SDL_Surface *screen,
   float		philo;
 
   philo = data->conf->nb_philo;
-  food = data->conf->nb_food;
+  food = data->stat->food;
   pos.y = 10;
   pos.x = 100 + BAR_WIDTH * (i + 1);
   if (!display_one_empty_bar(screen,
@@ -94,7 +94,7 @@ static int	fill_gui(SDL_Surface *screen,
   int		eaten;
   SDL_Rect	pos;
 
-  food = conf->nb_food;
+  food = MAX(stat->food, 1);
   eaten = stat->total_eaten;
   pos.x = 10;
   pos.y = 10;
@@ -133,6 +133,8 @@ void		*launch_gui(void *arg)
 	  || !fill_gui(screen, data, data->conf, data->stat)
 	  || SDL_Flip(screen) == -1)
 	break ;
+      else if (event.type == SDL_KEYDOWN)
+	manage_event(&event, data);
       SDL_Delay(20);
     }
   SDL_FreeSurface(screen);

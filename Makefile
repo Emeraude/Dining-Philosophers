@@ -18,6 +18,7 @@ SRCS	=	$(DIR)/argv.c \
 		$(DIR)/csv.c \
 		$(DIR)/diner.c \
 		$(DIR)/main.c \
+		$(DIRGUI)/event.c \
 		$(DIRGUI)/init.c \
 		$(DIRGUI)/rect.c
 
