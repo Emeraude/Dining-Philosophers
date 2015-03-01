@@ -1,0 +1,60 @@
+.TH man 1 "2015" "1.0" "Dining Philosophers man page"
+.SH NAME
+\fBphilo\fR \- A simple implementation of the famous Dining Philosophers Problem
+.SH SYNOPSIS
+\fBphilo\fR [\fB--philo\fR \fInb\fR] [\fB--food\fR \fInb\fR] [\fB--time\fR \fInb\fR] [\fB--out\fR \fInb\fR] [\fB--config\fR|\fInb_philo\fR]
+.SH DESCRIPTION
+.PP
+Seven silent philosophers sit at a round table with bowls of rice. Chopsticks are placed between each pair of adjacent philosophers. Each philosopher \fBthink\fR, \fBeat\fR and \fBrest\fR.
+.br
+If compiled with \fBbonus\fR option, a GUI created with the \fBSDL\fR will be launched, and informations about the philosophers will be displayed in it; and written in a file which can be used to do data analysis.
+.br
+It can support more than 25000 philosophers, even if the GUI is launched.
+.SH CONFIGURATION
+.PP
+You can change the number of philosophers, the quantity of food, the time of each action. Each of this values can be changed at the compile time and at the run time. The macros you have to change at the compile time are the following :
+.TP
+\fBNB_PHILO\fI nb\fR
+Change the number of philosophers. Default value is \fB7\fR. Note that the program will not launch with less than \fB2\fR philosophers.
+.TP
+\fBNB_FOOD\fI nb\fR
+Change the quantity of food. Default value is \fB1000\fR. Note that the program will not launch with less than \fB1\fR bowl of rice.
+.TP
+\fBTIME_ACTION\fI nb\fR
+Change the number of millisecond of each action. Default value is \fB20\fR. Note that the programm will note launch with less than \fB1\fR millisecond.
+.TP
+\fBOUT_FILE\fI file\fR
+Change the output file for the data. Default value is \fB"out.csv"\fR. It will only work if compiled with the \fBbonus\fR option.
+.SH OPTIONS
+.TP
+\fB--config\fR
+Print the informations about the 4 values \fBNB_PHILO\fR, \fBNB_FOOD\fR, \fBTIME_ACTION\fR and \fBOUT_FILE\fR, which can be changed at the compile time.
+.TP
+\fB--food\fI nb\fR
+Change the quantity of food, regardless the value of \fBNB_FOOD\fR. This value must be more than \fB0\fR.
+.TP
+\fB--out\fI file\fR
+Change the output file for the data, regardless the value of \fBOUT_FILE\fR. If will only work if compiled with \fBbonus\fR option.
+.TP
+\fB--philo\fI nb\fR
+Change the number of philosophers, regardless the value of \fBNB_PHILO\fR. This value must be more than \fB1\fR.
+\fB--time\fI nb\fR
+Change the number of millisecond of each action, regardless the value of \fBTIME_ACTION\fR. This value must be more than \fB0\fR.
+.SH GUI OPTIONS
+The GUI will be launched if compiled with \fBbonus\fR option. The key \fBF\fR will add 5% of the current amount of rice, and the key \fBS\fR will remove 5% of the current amount of rice.
+.SH EXAMPLES
+.TP
+CFLAGS+='-DNB_PHILO=5' make bonus
+It will compile with the \fBbonus\fR option and set the default philosophers number to \fB5\fR.
+.TP
+philo --philo 5 --food 200
+It will launch the program with \fB5\fR philosophers and \fB200\fR bowls of rice.
+.SH EXIT STATUS
+.TP
+\fB0\fR
+Successful program execution.
+.TP
+\fB1\fR
+Thread or argument error.
+.SH AUTHOR
+broggi_t, duques_g

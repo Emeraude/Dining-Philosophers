@@ -32,7 +32,7 @@
 # endif
 
 # define MSG_ONE_PHILO	"There is only one philosopher, which \
-is playing alone with his chopstick\n"
+is playing alone with his stick\n"
 # define MSG_NO_PHILO	"There is no philosopher\n"
 # define MSG_NO_FOOD	"There is no food\n"
 # define MSG_INVALID_TIME	"Time is too short\n"

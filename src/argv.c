@@ -15,7 +15,7 @@
 
 static int	check_argv_integrity(t_conf *conf)
 {
-  if (!conf->nb_philo == 1)
+  if (conf->nb_philo == 1)
     return (fprintf(stderr, MSG_ONE_PHILO) * 0);
   else if (conf->nb_philo < 1)
     return (fprintf(stderr, MSG_NO_PHILO) * 0);
