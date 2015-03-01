@@ -58,7 +58,7 @@ static int	launch_threads(t_data *data)
       if (pthread_join(data[i].thread, NULL))
 	return (0);
       printf("\033[0;3%dmPhilosopher [%d] has eaten %d times\033[0m\n",
-	     i % 8 + 1, i, data[i].eaten_plates);
+	     i % 7 + 1, i, data[i].eaten_plates);
     }
   return (1);
 }

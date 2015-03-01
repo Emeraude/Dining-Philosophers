@@ -15,9 +15,10 @@
 #  include <SDL/SDL.h>
 #  define COUNT_ARRAY(x)	(sizeof(x) / sizeof(*x))
 
-#  define BAR_WIDTH	40
 #  define WIN_WIDTH	640
 #  define WIN_HEIGHT	480
+#  define BAR_WIDTH	40
+#  define BAR_HEIGHT	(WIN_HEIGHT - 22)
 
 typedef struct	s_size
 {

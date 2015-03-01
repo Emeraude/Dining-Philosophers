@@ -100,7 +100,7 @@ void		*start_diner(void *arg)
 
   data = (t_data *)arg;
   printf("\033[0;3%dmPhilosopher [%d] set around the table\033[0m\n",
-	 data->id % 8 + 1, data->id);
+	 data->id % 7 + 1, data->id);
   while (data->stat->food > 0)
     choose_action(data, data->phi_st, data->conf, data->id);
   return (NULL);

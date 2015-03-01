@@ -13,6 +13,36 @@
 # include "philosophe.h"
 # include "bonus.h"
 
+static int	display_philo_bar(SDL_Surface *screen,
+				  t_data *data,
+				  int bar_size,
+				  Uint32 color)
+{
+  SDL_Rect	pos;
+  t_size	size;
+  float		size_rest;
+  float		size_eat;
+  float		size_think;
+  float		total_action;
+
+  pos.y = WIN_HEIGHT - bar_size - 11 + 3;
+  pos.x = 150 + BAR_WIDTH * (data->id + 1) + 1;
+  total_action = data->eaten_plates + data->hours_slept + data->hours_thought;
+  size_rest = bar_size / (total_action / data->hours_slept);
+  size_think = bar_size / (total_action / data->hours_thought);
+  size_eat = bar_size / (total_action / data->eaten_plates);
+  if (!display_rect(screen, init_size(&size, size_rest, BAR_WIDTH - 2),
+		    &pos, color & 0x555555))
+    return (0);
+  pos.y = WIN_HEIGHT - bar_size - 11 + size_rest + 2;
+  if (!display_rect(screen, init_size(&size, size_think, BAR_WIDTH - 2),
+		    &pos, color & 0xaaaaaa))
+    return (0);
+  pos.y = WIN_HEIGHT - bar_size - 11 + size_rest + size_think + 1;
+  return (!display_rect(screen, init_size(&size, size_eat, BAR_WIDTH - 2),
+			&pos, color));
+}
+
 static int	display_one_philo(SDL_Surface *screen,
 				  t_data *data,
 				  int i,
@@ -23,18 +53,6 @@ static int	display_one_philo(SDL_Surface *screen,
   int		bar_size;
   float		food;
   float		philo;
-  float		total_action;
-  float		size_rest;
-  float		size_eat;
-  float		size_think;
-
-  (void)color;
-  (void)size_rest;
-  (void)size_think;
-  (void)size_eat;
-  (void)total_action;
-  (void)philo;
-  (void)food;
 
   philo = data->conf->nb_philo;
   food = data->conf->nb_food;
@@ -44,28 +62,8 @@ static int	display_one_philo(SDL_Surface *screen,
 			     init_size(&size, WIN_HEIGHT - 20, BAR_WIDTH),
 			     &pos))
     return (0);
-  bar_size = data->phi_st[i].eaten_plates * ((WIN_HEIGHT - 22) / (food / philo));
-  printf("%d: %d: %f: ", bar_size, data->phi_st[i].eaten_plates, WIN_HEIGHT / (food / philo));
-  total_action = data->phi_st[i].eaten_plates + data->phi_st[i].hours_slept + data->phi_st[i].hours_thought;
-  size_rest = bar_size / (total_action / data->phi_st[i].hours_slept);
-  size_think = bar_size / (total_action / data->phi_st[i].hours_thought);
-  size_eat = bar_size / (total_action / data->phi_st[i].eaten_plates);
-  printf("%f: %f\n", total_action, size_rest);
-  pos.y = WIN_HEIGHT - bar_size - 11;
-  if (!display_rect(screen,
-		    init_size(&size, size_rest, BAR_WIDTH - 2)
-		    , &pos, color & 0x555555))
-    return (0);
-  pos.y = WIN_HEIGHT - bar_size - 11 + size_rest;
-  if (!display_rect(screen,
-		    init_size(&size, size_think, BAR_WIDTH - 2)
-		    , &pos, color & 0xaaaaaa))
-    return (0);
-  pos.y = WIN_HEIGHT - bar_size - 11 + size_rest + size_think;
-  if (!display_rect(screen,
-		    init_size(&size, size_eat, BAR_WIDTH - 2)
-		    , &pos, color))
-    return (0);
+  bar_size = data->phi_st[i].eaten_plates * (BAR_HEIGHT / (food / philo));
+  display_philo_bar(screen, &data->phi_st[i], bar_size, color);
   return (1);
 }
 
@@ -121,18 +119,19 @@ void		*launch_gui(void *arg)
   data = (t_data *)arg;
   if (SDL_Init(SDL_INIT_VIDEO) == -1
       || !(screen = SDL_SetVideoMode(WIN_WIDTH, WIN_HEIGHT,
-  				     32, SDL_HWSURFACE)))
+				     32, SDL_HWSURFACE))
+      || SDL_FillRect(screen, NULL, 0))
     return (NULL);
   SDL_WM_SetCaption("Dining Philosophers", NULL);
   while (1)
     {
       SDL_PollEvent(&event);
       if (event.type == SDL_QUIT
-  	  || (event.type == SDL_KEYDOWN
-  	      && event.key.keysym.sym == SDLK_ESCAPE)
-  	  || !fill_gui(screen, data, data->conf, data->stat)
-  	  || SDL_Flip(screen) == -1)
-  	break ;
+	  || (event.type == SDL_KEYDOWN
+	      && event.key.keysym.sym == SDLK_ESCAPE)
+	  || !fill_gui(screen, data, data->conf, data->stat)
+	  || SDL_Flip(screen) == -1)
+	break ;
       SDL_Delay(20);
     }
   SDL_FreeSurface(screen);
