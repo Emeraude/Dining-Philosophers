@@ -23,14 +23,15 @@ static int	display_philo_bar(SDL_Surface *screen,
   float		size_rest;
   float		size_eat;
   float		size_think;
-  float		total_action;
+  float		total;
 
   pos.y = WIN_HEIGHT - bar_size - 11 + 3;
-  pos.x = 150 + BAR_WIDTH * (data->id + 1) + 1;
-  total_action = data->eaten_plates + data->hours_slept + data->hours_thought;
-  size_rest = bar_size / (total_action / data->hours_slept);
-  size_think = bar_size / (total_action / data->hours_thought);
-  size_eat = bar_size / (total_action / data->eaten_plates);
+  pos.x = 100 + BAR_WIDTH * (data->id + 1) + 1;
+  if (!(total = data->eaten_plates + data->hours_slept + data->hours_thought))
+    total = 0.1;
+  size_rest = bar_size / (total / data->hours_slept);
+  size_think = bar_size / (total / data->hours_thought);
+  size_eat = bar_size / (total / data->eaten_plates);
   if (!display_rect(screen, init_size(&size, size_rest, BAR_WIDTH - 2),
 		    &pos, color & 0x555555))
     return (0);
@@ -57,9 +58,9 @@ static int	display_one_philo(SDL_Surface *screen,
   philo = data->conf->nb_philo;
   food = data->conf->nb_food;
   pos.y = 10;
-  pos.x = 150 + BAR_WIDTH * (i + 1);
+  pos.x = 100 + BAR_WIDTH * (i + 1);
   if (!display_one_empty_bar(screen,
-			     init_size(&size, WIN_HEIGHT - 20, BAR_WIDTH),
+			     init_size(&size, BAR_HEIGHT + 2, BAR_WIDTH),
 			     &pos))
     return (0);
   bar_size = data->phi_st[i].eaten_plates * (BAR_HEIGHT / (food / philo));

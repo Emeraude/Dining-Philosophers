@@ -83,6 +83,7 @@ typedef struct		s_data
 # define UNUSED		__attribute__((unused))
 
 # define MAX(x, y)	(x < y ? y : x)
+# define MIN(x, y)	(x < y ? x : y)
 
 int	check_argv(int argc, char **argv, t_conf *conf);
 void	*start_diner(void *arg);
